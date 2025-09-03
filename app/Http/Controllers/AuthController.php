@@ -50,7 +50,7 @@ class AuthController extends BaseController
 
     public function admin_login(AdminLoginRequest $request)
     {
-       // $log = request(['email', 'password']);
+      
         if (auth()->guard('admin')->attempt($request->only('email', 'password'))) {
             config(['auth.guards.api.provider' => 'admin']);
             $admin = Admin::query()->select('admins.*')->find(auth()->guard('admin')->user()['id']);

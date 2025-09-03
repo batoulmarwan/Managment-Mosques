@@ -21,4 +21,7 @@ class Staff extends Model
     public function mosque_staff(){
         return $this->hasMany(Staff_mosque::class,'staff_id');
       }
+      public function schedule(){
+        return $this->hasMany(schedules::class,'staff_id');
+      }
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\SchedulController;
 use Illuminate\Support\Facades\Notification;
 use App\Models\User;
 use App\Notifications\NewUser;
@@ -52,7 +53,10 @@ Route::group(['prefix'=>'admin','middleware'=>['auth:admin-api','scopes:admin']]
     Route::post('/admin/requests/{id}/progress', [RequestController::class, 'updateProgress']);
     Route::get('/veiwComplaint', [RequestController::class, 'veiwComplaint']);
     Route::post('/complaints/{id}', [RequestController::class, 'updateStatusComplaint']);
-
+    Route::post('/StoreSchedul',[SchedulController::class,'store']);
+    Route::get('/ViewSchedul',[SchedulController::class,'view']);
+    Route::post('/updateSchedul/{id}',[SchedulController::class,'update']);
+    Route::post('/deletSchedul/{id}',[SchedulController::class,'destroy']);
 });
 Route::prefix('admin')->group(function () {
     Route::post('password/email', [AuthController::class, 'ForgetPassword']);
