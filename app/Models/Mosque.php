@@ -34,4 +34,11 @@ class Mosque extends Model
       public function schedule(){
         return $this->hasMany(schedules::class,'mosque_id');
       }
+      public function staff()
+{
+    return $this->belongsToMany(Staff::class, 'staff_mosques')
+                ->withPivot('role')
+                ->withTimestamps();
+}
+
 }

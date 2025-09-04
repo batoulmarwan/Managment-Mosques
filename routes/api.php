@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\SchedulController;
+use App\Http\Controllers\CourseController;
 use Illuminate\Support\Facades\Notification;
 use App\Models\User;
 use App\Notifications\NewUser;
@@ -56,7 +57,9 @@ Route::group(['prefix'=>'admin','middleware'=>['auth:admin-api','scopes:admin']]
     Route::post('/StoreSchedul',[SchedulController::class,'store']);
     Route::get('/ViewSchedul',[SchedulController::class,'view']);
     Route::post('/updateSchedul/{id}',[SchedulController::class,'update']);
-    Route::post('/deletSchedul/{id}',[SchedulController::class,'destroy']);
+    Route::delete('/deletSchedul/{id}',[SchedulController::class,'destroy']);
+    Route::get('/courses/schedule/{scheduleId}', [CourseController::class, 'getCoursesBySchedule']);
+    Route::get('/Teacher/schedule/{scheduleId}', [ShaffController::class, 'getTeachersBySchedule']);
 });
 Route::prefix('admin')->group(function () {
     Route::post('password/email', [AuthController::class, 'ForgetPassword']);
@@ -70,7 +73,16 @@ Route::post('/requests', [RequestController::class, 'store']);
 Route::get('/my-requests', [RequestController::class, 'myRequests']);
 Route::post('/addcomplaint', [RequestController::class, 'addcomplaint']);
 Route::get('/my-complaints', [RequestController::class, 'myComplaints']);
-
+Route::post('/courses', [CourseController::class, 'addCourse']);
+Route::post('/courses/{id}', [CourseController::class, 'update']);
+Route::get('/courses/{id}', [CourseController::class, 'show']);
+Route::get('/my-courses', [CourseController::class, 'myCourses']);
+Route::delete('/courses/{id}', [CourseController::class, 'destroy']);
+Route::post('/staff/add-teacher-by-supervisor', [ShaffController::class, 'addTeacherBySupervisor']);
+Route::get('/teachers', [ShaffController::class, 'getMyTeachers']);
+Route::get('/teachers/{id}', [ShaffController::class, 'showTeacher']);
+Route::post('/teachers/{id}', [ShaffController::class, 'updateTeacher']);
+Route::delete('/teachers/{id}', [ShaffController::class, 'deleteTeacher']);
 });
 
 

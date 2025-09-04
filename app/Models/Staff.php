@@ -24,4 +24,12 @@ class Staff extends Model
       public function schedule(){
         return $this->hasMany(schedules::class,'staff_id');
       }
+      public function mosques()
+{
+    return $this->belongsToMany(\App\Models\Mosque::class, 'staff_mosques')
+                ->withPivot('role')
+                ->withTimestamps()
+                ->withTrashed(); 
+}
+
 }
