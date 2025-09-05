@@ -29,4 +29,8 @@ class schedules extends Model
 {
     return $this->hasMany(Course::class);
 }
+public function memorization_sessions()
+{
+    return $this->hasMany(MemorizationSession::class);
+}
 }

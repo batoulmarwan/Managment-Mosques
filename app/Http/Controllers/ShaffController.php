@@ -276,30 +276,42 @@ public function getTeachersBySchedule($scheduleId)
     }
 
     $supervisor = $schedule->Staff;
+
     if (!$supervisor) {
         return response()->json(['message' => 'لا يوجد مشرف مرتبط بهذا الدوام'], 404);
     }
 
-    $mosqueId = DB::table('staff_mosques')
-        ->where('staff_id', $supervisor->id)
-        ->value('mosque_id');
+    // جلب المسجد المرتبط بالمشرف
+    $mosqueId = $supervisor->mosque_staff()->value('mosque_id');
 
     if (!$mosqueId) {
-        return response()->json(['message' => 'المشرف غير مرتبط بأي مسجد'], 404);
+        return response()->json(['message' => 'المشرف غير مرتبط بأي مسجد'], 403);
     }
 
-    // جلب الأساتذة فقط
-    $teachers = Staff::whereHas('mosque_staff', function($query) use ($mosqueId) {
-        $query->where('mosque_id', $mosqueId)
-              ->where('role', 'أستاذ');
-    })->get();
+    // جلب جميع الأشخاص المرتبطين بنفس المسجد باستثناء المشرف نفسه
+    $staff = Staff::whereHas('mosque_staff', function ($query) use ($mosqueId) {
+        $query->where('mosque_id', $mosqueId);
+    })
+    ->where('id', '!=', $supervisor->id)
+    ->with(['mosque_staff' => function($q) use ($mosqueId) {
+        $q->where('mosque_id', $mosqueId);
+    }])
+    ->get();
+
+    // تجهيز البيانات مع الأدوار
+    $staffWithRoles = $staff->map(function($person) {
+        $person->roles = $person->mosque_staff->pluck('role');
+        unset($person->mosque_staff);
+        return $person;
+    });
 
     return response()->json([
         'schedule' => $schedule->name,
         'supervisor' => $supervisor,
-        'teachers' => $teachers
+        'staff' => $staffWithRoles
     ]);
 }
+
 
 
 
