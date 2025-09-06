@@ -146,7 +146,7 @@ class AuthController extends BaseController
     
     public function adminProfile()
     {
-        $admin = auth()->guard('admin-api')->user(); // ✅ استخدم admin-api
+        $admin = auth()->guard('admin-api')->user(); 
     
         if (!$admin) {
             return $this->sendError('المسؤول غير مصرح له', [], 401);

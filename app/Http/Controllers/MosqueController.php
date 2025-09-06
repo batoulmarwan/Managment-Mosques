@@ -131,15 +131,14 @@ class MosqueController extends BaseController
         return $this->sendResponse(MosqueResource::collection($mosques), 'Mosques retrieved successfully.');
     }
     public function destroy($id)
-{
-    $mosque = Mosque::findOrFail($id);
-    $mosque->delete();
-
-    return $this->sendResponse([], 'Mosque archived successfully');
-}
+       {
+           $mosque = Mosque::findOrFail($id);
+            $mosque->delete();
+              return $this->sendResponse([], 'Mosque archived successfully');
+       }
     public function ViewDelate(Request $request){
-    $archivedMosques = Mosque::onlyTrashed()->get();
-    return $this->sendResponse($archivedMosques, " successfully");
+      $archivedMosques = Mosque::onlyTrashed()->get();
+      return $this->sendResponse($archivedMosques, " successfully");
 }
 public function getMyMosqueName()
 {

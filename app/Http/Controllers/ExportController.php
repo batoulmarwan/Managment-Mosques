@@ -21,15 +21,15 @@ class ExportController extends BaseController
             'full_name' => 'required',
             'mosque_name' => 'required',
             'date_decision' => 'required',
-        ]);
+           ]);
          $decision = Decision::create([
           'type_decision' => $request->type_decision,
           'full_name' => $request->full_name,
           'mosque_name' => $request->mosque_name,
           'date_decision' => $request->date_decision,
-        ]);
-       broadcast(new DecisionCreated($decision));
-       return $this->sendResponse($decision, "تم اصدار القرار وبثه بنجاح");
+           ]);
+           broadcast(new DecisionCreated($decision));
+           return $this->sendResponse($decision, "تم اصدار القرار وبثه بنجاح");
 }
 public function getLatestDecision(Request $request)
 {

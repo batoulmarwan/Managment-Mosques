@@ -72,10 +72,10 @@ class ShaffController extends BaseController
     }
     public function index1()
     {
-    $mosques = Staff::all();
-    Staff_mosque::all();
-    //return $this->sendResponse($mosques ,"Successfully retrieved all mosques.");
-    return $this->sendResponse(StaffResource::collection($mosques), "Successfully retrieved all mosques.");
+      $mosques = Staff::all();
+      Staff_mosque::all();
+      //return $this->sendResponse($mosques ,"Successfully retrieved all mosques.");
+      return $this->sendResponse(StaffResource::collection($mosques), "Successfully retrieved all mosques.");
 
     }
     public function restoreMosqueManager($id)
@@ -275,21 +275,17 @@ public function getTeachersBySchedule($scheduleId)
         return response()->json(['message' => 'الدوام غير موجود'], 404);
     }
 
-    // مشرف الدوام (واحد فقط بناءً على جدول schedules الحالي)
     $supervisor = $schedule->Staff;
 
     if (!$supervisor) {
         return response()->json(['message' => 'لا يوجد مشرف مرتبط بهذا الدوام'], 404);
     }
-
-    // جلب المسجد المرتبط بالمشرف
     $mosqueId = $supervisor->mosque_staff()->value('mosque_id');
 
     if (!$mosqueId) {
         return response()->json(['message' => 'المشرف غير مرتبط بأي مسجد'], 403);
     }
 
-    // جلب كل الأشخاص المرتبطين بنفس المسجد، بما فيهم المشرف
     $staff = Staff::whereHas('mosque_staff', function ($query) use ($mosqueId) {
         $query->where('mosque_id', $mosqueId);
     })
@@ -297,8 +293,6 @@ public function getTeachersBySchedule($scheduleId)
         $q->where('mosque_id', $mosqueId);
     }])
     ->get();
-
-    // تجهيز البيانات مع الأدوار
     $staffWithRoles = $staff->map(function($person) {
         $person->roles = $person->mosque_staff->pluck('role');
         unset($person->mosque_staff);
