@@ -275,6 +275,7 @@ public function getTeachersBySchedule($scheduleId)
         return response()->json(['message' => 'الدوام غير موجود'], 404);
     }
 
+    // مشرف الدوام (واحد فقط بناءً على جدول schedules الحالي)
     $supervisor = $schedule->Staff;
 
     if (!$supervisor) {
@@ -288,11 +289,10 @@ public function getTeachersBySchedule($scheduleId)
         return response()->json(['message' => 'المشرف غير مرتبط بأي مسجد'], 403);
     }
 
-    // جلب جميع الأشخاص المرتبطين بنفس المسجد باستثناء المشرف نفسه
+    // جلب كل الأشخاص المرتبطين بنفس المسجد، بما فيهم المشرف
     $staff = Staff::whereHas('mosque_staff', function ($query) use ($mosqueId) {
         $query->where('mosque_id', $mosqueId);
     })
-    ->where('id', '!=', $supervisor->id)
     ->with(['mosque_staff' => function($q) use ($mosqueId) {
         $q->where('mosque_id', $mosqueId);
     }])
@@ -311,8 +311,6 @@ public function getTeachersBySchedule($scheduleId)
         'staff' => $staffWithRoles
     ]);
 }
-
-
 
 
 }

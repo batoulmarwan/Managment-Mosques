@@ -10,6 +10,7 @@ use App\Http\Controllers\RequestController;
 use App\Http\Controllers\SchedulController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\MemorizationSessionController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Notification;
 use App\Models\User;
 use App\Notifications\NewUser;
@@ -26,6 +27,8 @@ use App\Notifications\NewUser;
 Route::post('/user_register',[AuthController::class,'user_register']);
 Route::post('/user_login',[AuthController::class,'user_login']);
 Route::post('/admin_login',[AuthController::class,'admin_login']);
+
+
 Route::get('/test-cors', function () {
     return response()->json(['message' => 'CORS works!']);
 });
@@ -62,6 +65,10 @@ Route::group(['prefix'=>'admin','middleware'=>['auth:admin-api','scopes:admin']]
     Route::get('/courses/schedule/{scheduleId}', [CourseController::class, 'getCoursesBySchedule']);
     Route::get('/Teacher/schedule/{scheduleId}', [ShaffController::class, 'getTeachersBySchedule']);
     Route::get('schedule/{scheduleId}', [MemorizationSessionController::class, 'getBySchedule']);
+
+    Route::get('/admin/profile', [AuthController::class, 'adminProfile']);
+
+    Route::get('/getStats',[DashboardController::class,'getStats']);
 });
 Route::prefix('admin')->group(function () {
     Route::post('password/email', [AuthController::class, 'ForgetPassword']);
@@ -91,6 +98,10 @@ Route::post('memorization-sessions/{id}', [MemorizationSessionController::class,
 Route::get('memorization-sessions/{id}', [MemorizationSessionController::class, 'show']);
 Route::delete('memorization-sessions/{id}', [MemorizationSessionController::class, 'destroy']);
 Route::get('my-memorization-sessions', [MemorizationSessionController::class, 'mySessions']);
+
+Route::get('getchByName', [MosqueController::class, 'getMyMosqueName']);
+
+Route::get('/user/profile', [AuthController::class, 'userProfile']);
 
 });
 

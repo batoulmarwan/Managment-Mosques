@@ -131,4 +131,29 @@ class AuthController extends BaseController
 
         return response(['message' => 'Password has been successfully reset'], 200);
     }
+
+    public function userProfile()
+    {
+        config(['auth.guards.api.provider' => 'user']); 
+        $user = auth()->user();
+    
+        if (!$user) {
+            return $this->sendError('المستخدم غير مصرح له', [], 401);
+        }
+    
+        return $this->sendResponse(new RegisterResource($user), "تم جلب بيانات المستخدم");
+    }
+    
+    public function adminProfile()
+    {
+        $admin = auth()->guard('admin-api')->user(); // ✅ استخدم admin-api
+    
+        if (!$admin) {
+            return $this->sendError('المسؤول غير مصرح له', [], 401);
+        }
+    
+        return $this->sendResponse(new LoginResource($admin), "تم جلب بيانات المشرف");
+    }
+    
+    
 }

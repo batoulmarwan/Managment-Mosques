@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Staff;
 use App\Http\Requests\MosqueStoreRequest;
 use App\Http\Resources\MosqueResource;
 use App\Models\Mosque;
@@ -141,5 +141,26 @@ class MosqueController extends BaseController
     $archivedMosques = Mosque::onlyTrashed()->get();
     return $this->sendResponse($archivedMosques, " successfully");
 }
+public function getMyMosqueName()
+{
+    $userPhone = auth()->user()->mynumber;
+
+    $staff = Staff::where('phone', $userPhone)->first();
+
+    if (!$staff) {
+        return response()->json(['message' => 'المستخدم غير موجود كمشرف'], 404);
+    }
+
+    $mosque = $staff->mosques()->first(); 
+
+    if (!$mosque) {
+        return response()->json(['message' => 'لا يوجد مسجد مرتبط بالمشرف'], 404);
+    }
+
+    return response()->json([
+        'mosque_name' => $mosque->name
+    ]);
+}
+
 }
 
